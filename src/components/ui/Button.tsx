@@ -1,20 +1,23 @@
 import React from 'react';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost';
+type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
+  size?: ButtonSize;
   isLoading?: boolean;
 }
 
 export function Button({ 
   children, 
   variant = 'primary', 
+  size = 'md',
   isLoading, 
   className = '', 
   ...props 
 }: ButtonProps) {
-  const baseClasses = 'inline-flex items-center justify-center rounded-md px-5 py-2.5 font-body font-semibold text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseClasses = 'inline-flex items-center justify-center rounded-md font-body font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
   
   const variants = {
     primary: 'bg-brand text-white hover:bg-brand-hover',
@@ -22,9 +25,15 @@ export function Button({
     ghost: 'bg-transparent text-brand hover:bg-brand-light/50',
   };
 
+  const sizes = {
+    sm: 'px-3 py-1.5 text-xs',
+    md: 'px-5 py-2.5 text-sm',
+    lg: 'px-6 py-3 text-base',
+  };
+
   return (
     <button 
-      className={`${baseClasses} ${variants[variant]} ${className}`}
+      className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`}
       disabled={isLoading || props.disabled}
       {...props}
     >
