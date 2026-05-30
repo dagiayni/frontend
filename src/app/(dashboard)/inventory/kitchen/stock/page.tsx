@@ -1,0 +1,62 @@
+"use client";
+
+import { AnimatedCard } from '@/components/ui/AnimatedCard';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
+
+export default function KitchenStockPage() {
+  const mockStock = [
+    { id: 1, name: 'Teff Flour', quantity: 50, unit: 'kg', category: 'Dry Goods', status: 'optimal' },
+    { id: 2, name: 'Berbere Spice', quantity: 2, unit: 'kg', category: 'Spices', status: 'low' },
+    { id: 3, name: 'Cooking Oil', quantity: 0, unit: 'L', category: 'Oils', status: 'critical' },
+    { id: 4, name: 'Onions', quantity: 30, unit: 'kg', category: 'Vegetables', status: 'optimal' },
+    { id: 5, name: 'Beef (Boneless)', quantity: 12, unit: 'kg', category: 'Meat', status: 'low' },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="font-display text-2xl font-bold text-brand-dark">Kitchen Stock</h2>
+        <Button variant="primary">+ Add Stock Item</Button>
+      </div>
+
+      <AnimatedCard>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-brand-light text-sm text-brand-dark/60 font-semibold uppercase tracking-wider">
+                <th className="p-4">Item Name</th>
+                <th className="p-4">Category</th>
+                <th className="p-4 text-right">Quantity</th>
+                <th className="p-4">Status</th>
+                <th className="p-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="text-sm font-body divide-y divide-brand-light">
+              {mockStock.map((item) => (
+                <tr key={item.id} className="hover:bg-brand-light/10 transition-colors">
+                  <td className="p-4 font-semibold text-brand-dark">{item.name}</td>
+                  <td className="p-4 text-brand-dark/70">{item.category}</td>
+                  <td className="p-4 text-right font-medium">
+                    {item.quantity} <span className="text-xs text-brand-dark/50">{item.unit}</span>
+                  </td>
+                  <td className="p-4">
+                    <Badge variant={
+                      item.status === 'optimal' ? 'success' : 
+                      item.status === 'low' ? 'warning' : 'danger'
+                    }>
+                      {item.status}
+                    </Badge>
+                  </td>
+                  <td className="p-4 text-right">
+                    <button className="text-brand hover:text-brand-dark font-semibold text-xs uppercase tracking-wide">Edit</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </AnimatedCard>
+    </div>
+  );
+}
