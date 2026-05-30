@@ -60,7 +60,7 @@ export function OrderTicket({ items, onRemoveItem, onUpdateQuantity, onClear, on
         </div>
       </div>
 
-      {/* Items List */}
+    {/* Items List */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {items.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-gray-400 font-body">
@@ -70,27 +70,46 @@ export function OrderTicket({ items, onRemoveItem, onUpdateQuantity, onClear, on
             <p>No items added yet</p>
           </div>
         ) : (
-          items.map(item => (
-            <div key={item.cartId} className="flex justify-between items-start border-b border-brand-light pb-4">
-              <div className="flex-1">
-                <div className="font-body font-semibold text-gray-900 leading-snug">{item.name}</div>
-                <div className="text-sm text-brand font-mono mt-1">{parseFloat(item.price).toFixed(2)} ETB</div>
-              </div>
-              
-              <div className="flex flex-col items-end gap-2 ml-4">
-                {!createdOrderId && (
-                  <div className="flex items-center gap-3 bg-off-white rounded-lg p-1">
-                    <button onClick={() => onUpdateQuantity(item.cartId, -1)} className="w-8 h-8 rounded-md bg-white shadow-sm text-brand font-bold flex items-center justify-center hover:bg-brand hover:text-white transition-colors">-</button>
-                    <span className="font-mono w-6 text-center font-semibold">{item.quantity}</span>
-                    <button onClick={() => onUpdateQuantity(item.cartId, 1)} className="w-8 h-8 rounded-md bg-white shadow-sm text-brand font-bold flex items-center justify-center hover:bg-brand hover:text-white transition-colors">+</button>
+          items.map(item => {
+            const isDrinks = item.category?.toLowerCase().includes('beer') || item.category?.toLowerCase().includes('drink') || item.category?.toLowerCase().includes('beverage') || item.category?.toLowerCase().includes('cocktail');
+            return (
+            <div key={item.cartId} className="flex flex-col border-b border-brand-light pb-4">
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <div className="font-body font-semibold text-gray-900 leading-snug">{item.name}</div>
+                  <div className="text-sm text-brand font-mono mt-1">{parseFloat(item.price).toFixed(2)} ETB</div>
+                </div>
+                
+                <div className="flex flex-col items-end gap-2 ml-4">
+                  {!createdOrderId && (
+                    <div className="flex items-center gap-3 bg-off-white rounded-lg p-1">
+                      <button onClick={() => onUpdateQuantity(item.cartId, -1)} className="w-8 h-8 rounded-md bg-white shadow-sm text-brand font-bold flex items-center justify-center hover:bg-brand hover:text-white transition-colors">-</button>
+                      <span className="font-mono w-6 text-center font-semibold">{item.quantity}</span>
+                      <button onClick={() => onUpdateQuantity(item.cartId, 1)} className="w-8 h-8 rounded-md bg-white shadow-sm text-brand font-bold flex items-center justify-center hover:bg-brand hover:text-white transition-colors">+</button>
+                    </div>
+                  )}
+                  <div className="font-mono font-bold text-gray-900">
+                    {(parseFloat(item.price) * item.quantity).toFixed(2)} ETB
                   </div>
-                )}
-                <div className="font-mono font-bold text-gray-900">
-                  {(parseFloat(item.price) * item.quantity).toFixed(2)} ETB
                 </div>
               </div>
+              
+              {!createdOrderId && (
+                <div className="mt-3 flex justify-end">
+                  <Button 
+                    variant="primary" 
+                    size="sm"
+                    className="text-xs px-4 py-1"
+                    onClick={handleSubmit}
+                    isLoading={isSubmitting}
+                  >
+                    Send to {isDrinks ? 'Bar' : 'Kitchen'}
+                  </Button>
+                </div>
+              )}
             </div>
-          ))
+            );
+          })
         )}
       </div>
 
@@ -110,16 +129,6 @@ export function OrderTicket({ items, onRemoveItem, onUpdateQuantity, onClear, on
             <span className="font-mono text-3xl">{total.toFixed(2)}</span>
           </div>
         </div>
-
-        {items.length > 0 && !createdOrderId && (
-          <Button 
-            className="w-full text-lg py-4 shadow-md" 
-            onClick={handleSubmit}
-            isLoading={isSubmitting}
-          >
-            Send to Kitchen
-          </Button>
-        )}
 
         {createdOrderId && (
           <div className="animate-pageIn">
