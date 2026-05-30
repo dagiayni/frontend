@@ -10,7 +10,8 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
 
-    const res = await fetch('/api/v1/auth/pin', {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
+    const res = await fetch(`${apiBase}/api/v1/auth/pin`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone, pin }),
@@ -25,7 +26,7 @@ export default function LoginPage() {
     localStorage.setItem('jwt', json.data.access_token);
     localStorage.setItem('refresh_token', json.data.refresh_token);
     localStorage.setItem('user', JSON.stringify(json.data.user));
-    window.location.href = '/(dashboard)/pos/';
+    window.location.href = '/pos';
   }
 
   return (
