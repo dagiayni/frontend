@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Ethiopic:wght@400;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Primary Brand */
+  --burgundy:        #800020;
+  --burgundy-dark:   #5C0016;
+  --burgundy-deeper: #1A0008;
+
+  /* White Family */
+  --white:           #FFFFFF;
+  --off-white:       #FAF7F7;
+  --blush:           #F5E6E8;
+  --blush-mid:       #E8C4CB;
+
+  /* Functional */
+  --success:         #10694F;
+  --warning:         #B45309;
+  --danger:          #DC2626;
+  --info:            #1E40AF;
+
+  /* Neutral */
+  --gray-100:        #F3EEEF;
+  --gray-300:        #D4C8CA;
+  --gray-500:        #8C7B7E;
+  --gray-700:        #4A3A3C;
+  --gray-900:        #1A1010;
+
+  /* KDS (Kitchen Display — dark mode) */
+  --kds-bg:          #1A0008;
+  --kds-surface:     #2D0010;
+  --kds-text:        #F5E6E8;
+
+  /* Typography */
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body:    'DM Sans', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --font-amharic: 'Noto Sans Ethiopic', sans-serif;
+
+  /* Motion */
+  --ease-out:    cubic-bezier(0.0, 0.0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--off-white);
+  color: var(--gray-900);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Page transitions */
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page-enter { animation: pageIn 0.2s var(--ease-out); }
+
+/* Scrollbar — burgundy themed */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--blush); }
+::-webkit-scrollbar-thumb { background: var(--burgundy); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--burgundy-dark); }
