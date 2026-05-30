@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { isTelegramMiniApp, initTelegramApp } from "@/lib/telegram";
 
+import { Navbar } from "@/components/ui/Navbar";
+
 export function TelegramAwareLayout({ children }: { children: React.ReactNode }) {
   const [isMiniApp, setIsMiniApp] = useState(false);
 
@@ -11,11 +13,14 @@ export function TelegramAwareLayout({ children }: { children: React.ReactNode })
     initTelegramApp(); // no-op in normal browser
   }, []);
 
+  if (isMiniApp) {
+    return <main className="flex-1 bg-off-white min-h-screen">{children}</main>;
+  }
+
   return (
-    <>
-      {!isMiniApp && <nav className="p-4 bg-brand text-white">{/* navbar placeholder */}</nav>}
-      <main className="flex-1">{children}</main>
-      {!isMiniApp && <footer className="p-4 bg-gray-100">{/* footer placeholder */}</footer>}
-    </>
+    <div className="flex min-h-screen bg-off-white">
+      <Navbar />
+      <main className="flex-1 overflow-auto">{children}</main>
+    </div>
   );
 }
