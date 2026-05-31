@@ -71,38 +71,81 @@ export default function EmployeesPage() {
         <Button variant="primary" onClick={handleAdd}>+ Add Employee</Button>
       </div>
 
-      <AnimatedCard>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-brand-light text-sm text-brand-dark/60 font-semibold uppercase tracking-wider">
-                <th className="p-4">Name</th>
-                <th className="p-4">Phone</th>
-                <th className="p-4">Email</th>
-                <th className="p-4">Role</th>
-                <th className="p-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="text-sm font-body divide-y divide-brand-light">
-              {employees.map((emp) => (
-                <tr key={emp.id} className="hover:bg-brand-light/10 transition-colors">
-                  <td className="p-4 font-semibold text-brand-dark">{emp.name}</td>
-                  <td className="p-4 text-brand-dark/70 font-mono text-xs">{emp.phone}</td>
-                  <td className="p-4 text-brand-dark/70">{emp.email}</td>
-                  <td className="p-4">
-                    <Badge status={(roleColors[emp.role] as BadgeStatus) || 'pending'}>
-                      {emp.role}
-                    </Badge>
-                  </td>
-                  <td className="p-4 text-right">
-                    <button onClick={() => handleEdit(emp)} className="text-brand hover:text-brand-dark font-semibold text-xs uppercase tracking-wide">Edit</button>
-                  </td>
+      {/* Desktop Table View */}
+      <div className="hidden md:block">
+        <AnimatedCard>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-brand-light text-sm text-brand-dark/60 font-semibold uppercase tracking-wider">
+                  <th className="p-4">Name</th>
+                  <th className="p-4">Phone</th>
+                  <th className="p-4">Email</th>
+                  <th className="p-4">Role</th>
+                  <th className="p-4 text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </AnimatedCard>
+              </thead>
+              <tbody className="text-sm font-body divide-y divide-brand-light">
+                {employees.map((emp) => (
+                  <tr key={emp.id} className="hover:bg-brand-light/10 transition-colors">
+                    <td className="p-4 font-semibold text-brand-dark">{emp.name}</td>
+                    <td className="p-4 text-brand-dark/70 font-mono text-xs">{emp.phone}</td>
+                    <td className="p-4 text-brand-dark/70">{emp.email}</td>
+                    <td className="p-4">
+                      <Badge status={(roleColors[emp.role] as BadgeStatus) || 'pending'}>
+                        {emp.role}
+                      </Badge>
+                    </td>
+                    <td className="p-4 text-right">
+                      <button onClick={() => handleEdit(emp)} className="text-brand hover:text-brand-dark font-semibold text-xs uppercase tracking-wide">Edit</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </AnimatedCard>
+      </div>
+
+      {/* Mobile Cards Grid View */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
+        {employees.map((emp, idx) => (
+          <AnimatedCard 
+            key={emp.id} 
+            delay={idx * 0.05} 
+            className="flex flex-col justify-between hover:border-brand-mid transition-all animate-fadeIn"
+          >
+            <div className="flex justify-between items-start mb-3">
+              <div>
+                <h3 className="font-body font-semibold text-brand-dark text-base leading-tight">
+                  {emp.name}
+                </h3>
+                <span className="text-xs text-brand-dark/60 mt-1.5 inline-block font-mono bg-brand-light px-2 py-0.5 rounded text-[11px]">
+                  {emp.phone}
+                </span>
+              </div>
+              <Badge status={(roleColors[emp.role] as BadgeStatus) || 'pending'}>
+                {emp.role}
+              </Badge>
+            </div>
+            
+            <div className="flex justify-between items-end mt-4 pt-3 border-t border-brand-light/50">
+              <div>
+                <span className="text-[10px] uppercase tracking-wider text-brand-dark/40 block font-body font-bold mb-0.5">Email</span>
+                <span className="text-sm text-brand-dark/85 font-medium truncate max-w-[150px] block">
+                  {emp.email || 'N/A'}
+                </span>
+              </div>
+              <button
+                onClick={() => handleEdit(emp)}
+                className="px-3.5 py-1.5 bg-brand-light/70 hover:bg-brand text-brand hover:text-white font-body font-bold text-xs uppercase tracking-wide rounded-md transition-all duration-200"
+              >
+                Edit
+              </button>
+            </div>
+          </AnimatedCard>
+        ))}
+      </div>
 
       <SlideOver isOpen={isFormOpen} onClose={() => { setIsFormOpen(false); setEditingItem(null); }} title={editingItem ? 'Edit Employee' : 'Add Employee'}>
         <EmployeeForm initialData={editingItem ?? undefined} onSave={handleSave} onCancel={() => { setIsFormOpen(false); setEditingItem(null); }} />

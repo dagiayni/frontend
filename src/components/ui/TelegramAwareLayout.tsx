@@ -22,7 +22,7 @@ export function TelegramAwareLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="flex min-h-screen bg-off-white">
+    <div className="flex flex-col md:flex-row min-h-screen bg-off-white">
       {!isAuthRoute && <Navbar />}
       <main className="flex-1 overflow-auto">{children}</main>
     </div>

@@ -76,12 +76,12 @@ export default function AnalyticsPage() {
         </div>
         
         {/* Time Filter Button Group */}
-        <div className="flex bg-white rounded-lg border border-brand-light p-1 shadow-sm">
+        <div className="flex bg-white rounded-lg border border-brand-light p-1 shadow-sm w-full sm:w-auto">
           {(['Day', 'Week', 'Month', 'Year'] as TimeFilter[]).map((filter) => (
             <button
               key={filter}
               onClick={() => setTimeFilter(filter)}
-              className={`px-4 py-1.5 text-sm font-body font-semibold rounded-md transition-colors ${
+              className={`flex-1 sm:flex-none px-4 py-1.5 text-center text-sm font-body font-semibold rounded-md transition-colors ${
                 timeFilter === filter 
                   ? 'bg-brand text-white shadow-sm' 
                   : 'text-gray-600 hover:bg-brand-light/50 hover:text-brand-dark'

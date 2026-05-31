@@ -22,17 +22,17 @@ export default function InventoryLayout({ children }: { children: React.ReactNod
     <div className="p-8 max-w-7xl mx-auto space-y-6">
       
       {/* Top Header & Main Toggle */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl font-bold text-brand-dark">Inventory Management</h1>
+          <h1 className="font-display text-2xl sm:text-3xl font-bold text-brand-dark">Inventory Management</h1>
           <p className="text-sm text-brand-dark/60 font-body mt-1">Manage stock, menus, and recipes for the Bar and Kitchen.</p>
         </div>
         
         {/* Bar / Kitchen Toggle */}
-        <div className="flex bg-white rounded-lg shadow-sm border border-brand-light p-1">
+        <div className="flex bg-white rounded-lg shadow-sm border border-brand-light p-1 w-full sm:w-auto shrink-0">
           <Link
             href="/inventory/bar/stock"
-            className={`px-6 py-2 rounded-md font-semibold text-sm transition-colors ${
+            className={`flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-md font-semibold text-center text-sm transition-colors ${
               isBar ? 'bg-brand text-white shadow' : 'text-brand-dark hover:bg-brand-light/30'
             }`}
           >
@@ -40,7 +40,7 @@ export default function InventoryLayout({ children }: { children: React.ReactNod
           </Link>
           <Link
             href="/inventory/kitchen/stock"
-            className={`px-6 py-2 rounded-md font-semibold text-sm transition-colors ${
+            className={`flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-md font-semibold text-center text-sm transition-colors ${
               isKitchen ? 'bg-brand text-white shadow' : 'text-brand-dark hover:bg-brand-light/30'
             }`}
           >
@@ -50,8 +50,8 @@ export default function InventoryLayout({ children }: { children: React.ReactNod
       </div>
 
       {/* Sub Navigation (Stock, Menu, Recipes) */}
-      <div className="border-b border-brand-light">
-        <nav className="-mb-px flex space-x-8">
+      <div className="border-b border-brand-light overflow-x-auto scrollbar-none">
+        <nav className="-mb-px flex space-x-8 flex-nowrap min-w-max pb-1">
           {subTabs.map((tab) => {
             const isActive = pathname?.startsWith(tab.path);
             return (

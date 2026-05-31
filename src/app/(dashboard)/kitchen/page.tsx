@@ -61,10 +61,10 @@ export default function KitchenPage() {
   if (error) return <div className="p-8 text-danger font-semibold bg-kds-bg min-h-screen">{error}</div>;
 
   return (
-    <div className="min-h-screen bg-kds-bg p-6 page-enter">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="font-display text-3xl text-kds-text font-bold tracking-wider">KITCHEN DISPLAY SYSTEM</h1>
-        <div className="text-kds-text/60 font-mono">
+    <div className="min-h-screen bg-kds-bg p-4 sm:p-6 page-enter">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center items-start gap-2 mb-6 border-b border-[#4A3A3C] pb-4">
+        <h1 className="font-display text-2xl sm:text-3xl text-kds-text font-bold tracking-wider">KITCHEN DISPLAY SYSTEM</h1>
+        <div className="text-kds-text/60 font-mono text-sm sm:text-base">
           {new Date().toLocaleTimeString()}
         </div>
       </div>
