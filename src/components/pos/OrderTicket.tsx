@@ -19,7 +19,7 @@ interface OrderTicketProps {
   onSubmitOrder: () => Promise<number | null>; // Returns created order_id
 }
 
-export function OrderTicket({ items, onRemoveItem, onUpdateQuantity, onClear, onSubmitOrder }: OrderTicketProps) {
+export function OrderTicket({ items, onUpdateQuantity, onClear, onSubmitOrder }: OrderTicketProps) {
   const [tableNumber, setTableNumber] = useState('1');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [createdOrderId, setCreatedOrderId] = useState<number | null>(null);

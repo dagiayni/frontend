@@ -32,7 +32,9 @@ const initialEmployees: Employee[] = [
   { id: 5, name: 'Kitchen Almaz', phone: '0900000005', role: 'kitchen', email: 'kitchen@mandela.com', pin: '5555' },
 ];
 
-const roleColors: Record<string, string> = {
+type BadgeStatus = 'pending' | 'preparing' | 'ready' | 'done' | 'cancelled' | 'success' | 'warning' | 'danger';
+
+const roleColors: Record<string, BadgeStatus> = {
   owner: 'success',
   manager: 'warning',
   cashier: 'success',
@@ -88,7 +90,7 @@ export default function EmployeesPage() {
                   <td className="p-4 text-brand-dark/70 font-mono text-xs">{emp.phone}</td>
                   <td className="p-4 text-brand-dark/70">{emp.email}</td>
                   <td className="p-4">
-                    <Badge status={roleColors[emp.role] || 'pending'}>
+                    <Badge status={(roleColors[emp.role] as BadgeStatus) || 'pending'}>
                       {emp.role}
                     </Badge>
                   </td>
@@ -103,7 +105,7 @@ export default function EmployeesPage() {
       </AnimatedCard>
 
       <SlideOver isOpen={isFormOpen} onClose={() => { setIsFormOpen(false); setEditingItem(null); }} title={editingItem ? 'Edit Employee' : 'Add Employee'}>
-        <EmployeeForm initialData={editingItem} onSave={handleSave} onCancel={() => { setIsFormOpen(false); setEditingItem(null); }} />
+        <EmployeeForm initialData={editingItem ?? undefined} onSave={handleSave} onCancel={() => { setIsFormOpen(false); setEditingItem(null); }} />
       </SlideOver>
     </div>
   );

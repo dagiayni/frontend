@@ -38,6 +38,14 @@ export default function BarMenuPage() {
   const handleAdd = () => { setEditingItem(null); setIsFormOpen(true); };
   const handleEdit = (item: MenuItemData) => { setEditingItem(item); setIsFormOpen(true); };
 
+  const getFormInitialData = () => {
+    if (!editingItem) return undefined;
+    return {
+      ...editingItem,
+      price: editingItem.price.toString(),
+    };
+  };
+
   const handleSave = (data: MenuSaveData) => {
     if (editingItem) {
       setMenu(prev => prev.map(m => m.id === editingItem.id ? { ...m, ...data, price: parseFloat(data.price) } : m));
@@ -89,7 +97,7 @@ export default function BarMenuPage() {
       </AnimatedCard>
 
       <SlideOver isOpen={isFormOpen} onClose={() => { setIsFormOpen(false); setEditingItem(null); }} title={editingItem ? 'Edit Menu Item' : 'Add Menu Item'}>
-        <MenuForm type="bar" initialData={editingItem} onSave={handleSave} onCancel={() => { setIsFormOpen(false); setEditingItem(null); }} />
+        <MenuForm type="bar" initialData={getFormInitialData()} onSave={handleSave} onCancel={() => { setIsFormOpen(false); setEditingItem(null); }} />
       </SlideOver>
     </div>
   );

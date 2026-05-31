@@ -35,7 +35,6 @@ const STATUS_BADGE: Record<string, { emoji: string; label: string; color: string
 export function PaymentButton({ orderId, onStatusChange }: PaymentButtonProps) {
   const [status, setStatus]           = useState<PaymentStatus>('idle');
   const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
-  const [txRef, setTxRef]             = useState<string | null>(null);
   const [errorMsg, setErrorMsg]       = useState<string | null>(null);
   const eventSourceRef                = useRef<EventSource | null>(null);
 

@@ -83,7 +83,7 @@ export default function CustomersPage() {
       </AnimatedCard>
 
       <SlideOver isOpen={isFormOpen} onClose={() => { setIsFormOpen(false); setEditingItem(null); }} title={editingItem ? 'Edit Customer' : 'Add Customer'}>
-        <CustomerForm initialData={editingItem} onSave={handleSave} onCancel={() => { setIsFormOpen(false); setEditingItem(null); }} />
+        <CustomerForm initialData={editingItem ?? undefined} onSave={handleSave} onCancel={() => { setIsFormOpen(false); setEditingItem(null); }} />
       </SlideOver>
     </div>
   );

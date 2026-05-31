@@ -7,7 +7,7 @@ interface AnimatedCardProps {
   children: React.ReactNode;
   className?: string;
   delay?: number;
-  as?: any;
+  as?: React.ElementType;
 }
 
 export function AnimatedCard({ 

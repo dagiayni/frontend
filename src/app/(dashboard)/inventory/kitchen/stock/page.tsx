@@ -122,7 +122,7 @@ export default function KitchenStockPage() {
       >
         <StockForm
           type="kitchen"
-          initialData={editingItem}
+            initialData={editingItem ?? undefined}
           onSave={handleSave}
           onCancel={() => { setIsFormOpen(false); setEditingItem(null); }}
         />

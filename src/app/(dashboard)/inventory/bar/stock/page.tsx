@@ -97,7 +97,7 @@ export default function BarStockPage() {
       </AnimatedCard>
 
       <SlideOver isOpen={isFormOpen} onClose={() => { setIsFormOpen(false); setEditingItem(null); }} title={editingItem ? 'Edit Stock Item' : 'Add Stock Item'}>
-        <StockForm type="bar" initialData={editingItem} onSave={handleSave} onCancel={() => { setIsFormOpen(false); setEditingItem(null); }} />
+        <StockForm type="bar" initialData={editingItem ?? undefined} onSave={handleSave} onCancel={() => { setIsFormOpen(false); setEditingItem(null); }} />
       </SlideOver>
     </div>
   );

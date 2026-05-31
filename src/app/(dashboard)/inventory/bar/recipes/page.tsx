@@ -52,6 +52,14 @@ export default function BarRecipesPage() {
   const handleAdd = () => { setEditingItem(null); setIsFormOpen(true); };
   const handleEdit = (recipe: Recipe) => { setEditingItem(recipe); setIsFormOpen(true); };
 
+  const getFormInitialData = () => {
+    if (!editingItem) return undefined;
+    return {
+      ...editingItem,
+      ingredients: editingItem.ingredients.map(ing => ({ ...ing, qty: ing.qty.toString() })),
+    };
+  };
+
   const handleSave = (data: RecipeSaveData) => {
     const parsed = {
       ...data,
@@ -96,7 +104,7 @@ export default function BarRecipesPage() {
       </div>
 
       <SlideOver isOpen={isFormOpen} onClose={() => { setIsFormOpen(false); setEditingItem(null); }} title={editingItem ? 'Edit Recipe' : 'Create Recipe'}>
-        <RecipeForm type="bar" initialData={editingItem} onSave={handleSave} onCancel={() => { setIsFormOpen(false); setEditingItem(null); }} />
+        <RecipeForm type="bar" initialData={getFormInitialData()} onSave={handleSave} onCancel={() => { setIsFormOpen(false); setEditingItem(null); }} />
       </SlideOver>
     </div>
   );

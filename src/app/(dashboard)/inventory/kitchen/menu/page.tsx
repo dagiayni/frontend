@@ -15,6 +15,13 @@ interface MenuItemData {
   available: boolean;
 }
 
+interface MenuSaveData {
+  name: string;
+  price: string;
+  category: string;
+  available: boolean;
+}
+
 const initialMenu: MenuItemData[] = [
   { id: 1, name: 'Special Tibs', price: 350, category: 'Mains', available: true },
   { id: 2, name: 'Shiro Tegabino', price: 150, category: 'Mains', available: true },
@@ -31,7 +38,15 @@ export default function KitchenMenuPage() {
   const handleAdd = () => { setEditingItem(null); setIsFormOpen(true); };
   const handleEdit = (item: MenuItemData) => { setEditingItem(item); setIsFormOpen(true); };
 
-  const handleSave = (data: any) => {
+  const getFormInitialData = () => {
+    if (!editingItem) return undefined;
+    return {
+      ...editingItem,
+      price: editingItem.price.toString(),
+    };
+  };
+
+  const handleSave = (data: MenuSaveData) => {
     if (editingItem) {
       setMenu(prev => prev.map(m => m.id === editingItem.id ? { ...m, ...data, price: parseFloat(data.price) } : m));
     } else {
@@ -82,7 +97,7 @@ export default function KitchenMenuPage() {
       </AnimatedCard>
 
       <SlideOver isOpen={isFormOpen} onClose={() => { setIsFormOpen(false); setEditingItem(null); }} title={editingItem ? 'Edit Menu Item' : 'Add Menu Item'}>
-        <MenuForm type="kitchen" initialData={editingItem} onSave={handleSave} onCancel={() => { setIsFormOpen(false); setEditingItem(null); }} />
+        <MenuForm type="kitchen" initialData={getFormInitialData()} onSave={handleSave} onCancel={() => { setIsFormOpen(false); setEditingItem(null); }} />
       </SlideOver>
     </div>
   );
