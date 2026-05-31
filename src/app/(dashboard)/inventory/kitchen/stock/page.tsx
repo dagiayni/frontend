@@ -47,6 +47,14 @@ export default function KitchenStockPage() {
     setIsFormOpen(true);
   };
 
+  const getFormInitialData = () => {
+    if (!editingItem) return undefined;
+    return {
+      ...editingItem,
+      quantity: editingItem.quantity.toString(),
+    };
+  };
+
   const handleSave = (data: StockSaveData) => {
     if (editingItem) {
       setStock(prev => prev.map(s => s.id === editingItem.id ? { ...s, ...data, quantity: parseFloat(data.quantity) } : s));
@@ -122,7 +130,7 @@ export default function KitchenStockPage() {
       >
         <StockForm
           type="kitchen"
-            initialData={editingItem ?? undefined}
+          initialData={getFormInitialData()}
           onSave={handleSave}
           onCancel={() => { setIsFormOpen(false); setEditingItem(null); }}
         />

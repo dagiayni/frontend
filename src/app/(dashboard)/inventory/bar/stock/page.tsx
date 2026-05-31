@@ -41,6 +41,14 @@ export default function BarStockPage() {
   const handleAdd = () => { setEditingItem(null); setIsFormOpen(true); };
   const handleEdit = (item: StockItem) => { setEditingItem(item); setIsFormOpen(true); };
 
+  const getFormInitialData = () => {
+    if (!editingItem) return undefined;
+    return {
+      ...editingItem,
+      quantity: editingItem.quantity.toString(),
+    };
+  };
+
   const handleSave = (data: StockSaveData) => {
     if (editingItem) {
       setStock(prev => prev.map(s => s.id === editingItem.id ? { ...s, ...data, quantity: parseFloat(data.quantity) } : s));
@@ -97,7 +105,7 @@ export default function BarStockPage() {
       </AnimatedCard>
 
       <SlideOver isOpen={isFormOpen} onClose={() => { setIsFormOpen(false); setEditingItem(null); }} title={editingItem ? 'Edit Stock Item' : 'Add Stock Item'}>
-        <StockForm type="bar" initialData={editingItem ?? undefined} onSave={handleSave} onCancel={() => { setIsFormOpen(false); setEditingItem(null); }} />
+        <StockForm type="bar" initialData={getFormInitialData()} onSave={handleSave} onCancel={() => { setIsFormOpen(false); setEditingItem(null); }} />
       </SlideOver>
     </div>
   );
