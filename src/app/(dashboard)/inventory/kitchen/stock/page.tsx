@@ -16,6 +16,14 @@ interface StockItem {
   status: string;
 }
 
+interface StockSaveData {
+  name: string;
+  quantity: string;
+  unit: string;
+  category: string;
+  status: string;
+}
+
 const initialStock: StockItem[] = [
   { id: 1, name: 'Teff Flour', quantity: 50, unit: 'kg', category: 'Dry Goods', status: 'optimal' },
   { id: 2, name: 'Berbere Spice', quantity: 2, unit: 'kg', category: 'Spices', status: 'low' },
@@ -39,7 +47,7 @@ export default function KitchenStockPage() {
     setIsFormOpen(true);
   };
 
-  const handleSave = (data: any) => {
+  const handleSave = (data: StockSaveData) => {
     if (editingItem) {
       setStock(prev => prev.map(s => s.id === editingItem.id ? { ...s, ...data, quantity: parseFloat(data.quantity) } : s));
     } else {

@@ -3,9 +3,17 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 
+interface EmployeeData {
+  name: string;
+  phone: string;
+  role: string;
+  pin: string;
+  email: string;
+}
+
 interface EmployeeFormProps {
-  initialData?: any;
-  onSave: (data: any) => void;
+  initialData?: Partial<EmployeeData>;
+  onSave: (data: EmployeeData) => void;
   onCancel: () => void;
 }
 

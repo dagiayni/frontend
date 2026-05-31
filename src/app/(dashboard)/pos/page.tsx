@@ -22,7 +22,7 @@ export default function PosPage() {
         } else {
           setError('Failed to load menu');
         }
-      } catch (err) {
+      } catch (_err) {
         setError('Error connecting to server');
       } finally {
         setIsLoading(false);
@@ -84,7 +84,7 @@ export default function PosPage() {
       }
       alert('Failed to submit order: ' + (json.error?.message || 'Unknown error'));
       return null;
-    } catch (e) {
+    } catch (_e) {
       alert('Network error submitting order');
       return null;
     }

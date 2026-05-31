@@ -12,6 +12,17 @@ interface Recipe {
   ingredients: { name: string; qty: number; unit: string }[];
 }
 
+interface IngredientInput {
+  name: string;
+  qty: string;
+  unit: string;
+}
+
+interface RecipeSaveData {
+  menuItem: string;
+  ingredients: IngredientInput[];
+}
+
 const initialRecipes: Recipe[] = [
   {
     id: 1,
@@ -41,10 +52,10 @@ export default function BarRecipesPage() {
   const handleAdd = () => { setEditingItem(null); setIsFormOpen(true); };
   const handleEdit = (recipe: Recipe) => { setEditingItem(recipe); setIsFormOpen(true); };
 
-  const handleSave = (data: any) => {
+  const handleSave = (data: RecipeSaveData) => {
     const parsed = {
       ...data,
-      ingredients: data.ingredients.map((i: any) => ({ ...i, qty: parseFloat(i.qty) })),
+      ingredients: data.ingredients.map((i: IngredientInput) => ({ ...i, qty: parseFloat(i.qty) })),
     };
     if (editingItem) {
       setRecipes(prev => prev.map(r => r.id === editingItem.id ? { ...r, ...parsed } : r));

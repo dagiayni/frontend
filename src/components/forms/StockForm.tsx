@@ -3,9 +3,17 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 
+interface StockData {
+  name: string;
+  category: string;
+  quantity: string;
+  unit: string;
+  status: string;
+}
+
 interface StockFormProps {
-  initialData?: any; // To be typed later based on API
-  onSave: (data: any) => void;
+  initialData?: Partial<StockData>;
+  onSave: (data: StockData) => void;
   onCancel: () => void;
   type: 'bar' | 'kitchen';
 }

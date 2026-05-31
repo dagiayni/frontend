@@ -3,9 +3,16 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 
+interface MenuItemData {
+  name: string;
+  category: string;
+  price: string;
+  available: boolean;
+}
+
 interface MenuFormProps {
-  initialData?: any;
-  onSave: (data: any) => void;
+  initialData?: Partial<MenuItemData>;
+  onSave: (data: MenuItemData) => void;
   onCancel: () => void;
   type: 'bar' | 'kitchen';
 }

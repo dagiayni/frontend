@@ -15,6 +15,13 @@ interface MenuItemData {
   available: boolean;
 }
 
+interface MenuSaveData {
+  name: string;
+  price: string;
+  category: string;
+  available: boolean;
+}
+
 const initialMenu: MenuItemData[] = [
   { id: 1, name: 'St. George Beer', price: 60, category: 'Beer', available: true },
   { id: 2, name: 'Vodka Martini', price: 250, category: 'Cocktails', available: true },
@@ -31,7 +38,7 @@ export default function BarMenuPage() {
   const handleAdd = () => { setEditingItem(null); setIsFormOpen(true); };
   const handleEdit = (item: MenuItemData) => { setEditingItem(item); setIsFormOpen(true); };
 
-  const handleSave = (data: any) => {
+  const handleSave = (data: MenuSaveData) => {
     if (editingItem) {
       setMenu(prev => prev.map(m => m.id === editingItem.id ? { ...m, ...data, price: parseFloat(data.price) } : m));
     } else {

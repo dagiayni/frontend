@@ -2,9 +2,16 @@ import React, { useState } from 'react';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
+interface CustomerData {
+  first_name: string;
+  last_name: string;
+  phone: string;
+  email: string;
+}
+
 interface CustomerFormProps {
-  initialData?: any;
-  onSave: (data: any) => void;
+  initialData?: Partial<CustomerData>;
+  onSave: (data: CustomerData) => void;
   onCancel: () => void;
 }
 

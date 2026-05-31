@@ -24,7 +24,7 @@ export default function KitchenPage() {
       } else {
         setError('Failed to load tickets');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Error connecting to server');
     } finally {
       setIsLoading(false);
@@ -52,7 +52,7 @@ export default function KitchenPage() {
         // Refresh instantly on success
         loadTickets();
       }
-    } catch (e) {
+    } catch (_e) {
       alert("Failed to update status");
     }
   }

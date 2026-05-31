@@ -16,6 +16,14 @@ interface StockItem {
   status: string;
 }
 
+interface StockSaveData {
+  name: string;
+  quantity: string;
+  unit: string;
+  category: string;
+  status: string;
+}
+
 const initialStock: StockItem[] = [
   { id: 1, name: 'St. George Beer', quantity: 48, unit: 'pcs', category: 'Beer', status: 'optimal' },
   { id: 2, name: 'Vodka', quantity: 2.5, unit: 'L', category: 'Spirits', status: 'low' },
@@ -33,7 +41,7 @@ export default function BarStockPage() {
   const handleAdd = () => { setEditingItem(null); setIsFormOpen(true); };
   const handleEdit = (item: StockItem) => { setEditingItem(item); setIsFormOpen(true); };
 
-  const handleSave = (data: any) => {
+  const handleSave = (data: StockSaveData) => {
     if (editingItem) {
       setStock(prev => prev.map(s => s.id === editingItem.id ? { ...s, ...data, quantity: parseFloat(data.quantity) } : s));
     } else {

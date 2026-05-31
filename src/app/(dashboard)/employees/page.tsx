@@ -16,6 +16,14 @@ interface Employee {
   pin: string;
 }
 
+interface EmployeeSaveData {
+  name: string;
+  phone: string;
+  role: string;
+  email: string;
+  pin: string;
+}
+
 const initialEmployees: Employee[] = [
   { id: 1, name: 'Owner Admin', phone: '0900000001', role: 'owner', email: 'owner@mandela.com', pin: '1111' },
   { id: 2, name: 'Manager Tesfaye', phone: '0900000002', role: 'manager', email: 'manager@mandela.com', pin: '2222' },
@@ -41,7 +49,7 @@ export default function EmployeesPage() {
   const handleAdd = () => { setEditingItem(null); setIsFormOpen(true); };
   const handleEdit = (emp: Employee) => { setEditingItem(emp); setIsFormOpen(true); };
 
-  const handleSave = (data: any) => {
+  const handleSave = (data: EmployeeSaveData) => {
     if (editingItem) {
       setEmployees(prev => prev.map(e => e.id === editingItem.id ? { ...e, ...data } : e));
     } else {
@@ -80,7 +88,7 @@ export default function EmployeesPage() {
                   <td className="p-4 text-brand-dark/70 font-mono text-xs">{emp.phone}</td>
                   <td className="p-4 text-brand-dark/70">{emp.email}</td>
                   <td className="p-4">
-                    <Badge status={(roleColors[emp.role] || 'pending') as any}>
+                    <Badge status={roleColors[emp.role] || 'pending'}>
                       {emp.role}
                     </Badge>
                   </td>

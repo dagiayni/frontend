@@ -14,6 +14,13 @@ interface Customer {
   email: string;
 }
 
+interface CustomerSaveData {
+  first_name: string;
+  last_name: string;
+  phone: string;
+  email: string;
+}
+
 const initialCustomers: Customer[] = [
   { id: 1, first_name: 'Abebe', last_name: 'Bikila', phone: '0911111111', email: 'abebe@example.com' },
   { id: 2, first_name: 'Tirunesh', last_name: 'Dibaba', phone: '0922222222', email: 'tirunesh@example.com' },
@@ -28,7 +35,7 @@ export default function CustomersPage() {
   const handleAdd = () => { setEditingItem(null); setIsFormOpen(true); };
   const handleEdit = (c: Customer) => { setEditingItem(c); setIsFormOpen(true); };
 
-  const handleSave = (data: any) => {
+  const handleSave = (data: CustomerSaveData) => {
     if (editingItem) {
       setCustomers(prev => prev.map(c => c.id === editingItem.id ? { ...c, ...data } : c));
     } else {

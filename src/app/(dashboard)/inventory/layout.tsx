@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { AnimatedCard } from '@/components/ui/AnimatedCard';
 
 export default function InventoryLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

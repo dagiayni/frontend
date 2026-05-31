@@ -9,9 +9,14 @@ interface Ingredient {
   unit: string;
 }
 
+interface RecipeData {
+  menuItem: string;
+  ingredients: Ingredient[];
+}
+
 interface RecipeFormProps {
-  initialData?: any;
-  onSave: (data: any) => void;
+  initialData?: Partial<RecipeData>;
+  onSave: (data: RecipeData) => void;
   onCancel: () => void;
   type: 'bar' | 'kitchen';
 }
