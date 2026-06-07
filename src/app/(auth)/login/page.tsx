@@ -10,23 +10,29 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
 
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
-    const res = await fetch(`${apiBase}/api/v1/auth/pin`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone, pin }),
-    });
-    const json = await res.json();
+    // Simulated Login for Frontend Only Mode
+    const demoAccounts = [
+      { role: 'Owner', phone: '0900000001', pin: '1111' },
+      { role: 'Manager', phone: '0900000002', pin: '2222' },
+      { role: 'Cashier', phone: '0900000003', pin: '3333' },
+      { role: 'Waiter', phone: '0900000004', pin: '4444' },
+      { role: 'Kitchen', phone: '0900000005', pin: '5555' },
+    ];
 
-    if (!json.success) {
-      setError(json.error?.message || 'Login failed');
+    const account = demoAccounts.find(a => a.phone === phone && a.pin === pin);
+
+    if (!account) {
+      setError('Invalid phone or PIN');
       return;
     }
 
-    localStorage.setItem('jwt', json.data.access_token);
-    localStorage.setItem('refresh_token', json.data.refresh_token);
-    localStorage.setItem('user', JSON.stringify(json.data.user));
-    window.location.href = '/pos';
+    const fakeToken = `simulated-jwt-${account.role.toLowerCase()}`;
+    const fakeUser = { id: Math.floor(Math.random() * 1000), name: `${account.role} User`, role: account.role.toLowerCase() };
+
+    localStorage.setItem('jwt', fakeToken);
+    localStorage.setItem('refresh_token', 'simulated-refresh-token');
+    localStorage.setItem('user', JSON.stringify(fakeUser));
+    window.location.href = '/dashboard';
   }
 
   return (

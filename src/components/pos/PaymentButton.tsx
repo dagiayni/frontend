@@ -12,7 +12,7 @@
  * Works in both the web dashboard and Telegram Mini App contexts.
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { isTelegramMiniApp, getTelegramWebApp } from '@/lib/telegram';
 
@@ -35,146 +35,38 @@ const STATUS_BADGE: Record<string, { emoji: string; label: string; color: string
 export function PaymentButton({ orderId, onStatusChange }: PaymentButtonProps) {
   const [status, setStatus]           = useState<PaymentStatus>('idle');
   const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
-  const [txRef, setTxRef]             = useState<string | null>(null);
   const [errorMsg, setErrorMsg]       = useState<string | null>(null);
-  const eventSourceRef                = useRef<EventSource | null>(null);
-
-  // ── Cleanup EventSource on unmount ─────────────────────────
-  useEffect(() => {
-    return () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-        eventSourceRef.current = null;
-      }
-    };
-  }, []);
 
   // ── Notify parent on status change ─────────────────────────
   useEffect(() => {
     onStatusChange?.(status);
   }, [status, onStatusChange]);
 
-  // ── Token helper ───────────────────────────────────────────
-  const getToken = useCallback((): string | null => {
-    if (typeof window === 'undefined') return null;
-    return (isTelegramMiniApp() ? sessionStorage : localStorage).getItem('jwt');
-  }, []);
-
-  // ── SSE Stream (OPTIMIZATION 1) ───────────────────────────
-  const startSSEStream = useCallback((ref: string) => {
-    const token = getToken();
-    if (!token) {
-      setStatus('error');
-      setErrorMsg('Not authenticated');
-      return;
-    }
-
-    // Close any existing stream
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
-    }
-
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
-    const url = `${apiBase}/api/v1/payments/stream/${encodeURIComponent(ref)}?token=${encodeURIComponent(token)}`;
-
-    const es = new EventSource(url);
-    eventSourceRef.current = es;
-
-    es.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-
-        if (data.status === 'success') {
-          setStatus('success');
-          es.close();
-          eventSourceRef.current = null;
-        } else if (data.status === 'failed') {
-          setStatus('failed');
-          es.close();
-          eventSourceRef.current = null;
-        } else if (data.status === 'timeout') {
-          // Server-side timeout — reconnect after a brief pause
-          es.close();
-          eventSourceRef.current = null;
-          setTimeout(() => startSSEStream(ref), 2000);
-        }
-        // 'pending' → keep listening
-      } catch {
-        // Ignore parse errors on heartbeat comments
-      }
-    };
-
-    es.onerror = () => {
-      // EventSource auto-reconnects on transient network errors.
-      // Only handle if permanently closed.
-      if (es.readyState === EventSource.CLOSED) {
-        eventSourceRef.current = null;
-        // If we're still pending, try to reconnect
-        if (status === 'pending') {
-          setTimeout(() => startSSEStream(ref), 3000);
-        }
-      }
-    };
-  }, [getToken, status]);
-
   // ── Initiate Payment ──────────────────────────────────────
-  const handleRequest = useCallback(async () => {
+  const handleRequest = useCallback(() => {
     setStatus('loading');
     setErrorMsg(null);
 
-    const token = getToken();
-    if (!token) {
-      setStatus('error');
-      setErrorMsg('Not authenticated. Please log in.');
-      return;
-    }
-
-    try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
-      const res = await fetch(`${apiBase}/api/v1/payments/initiate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ order_id: orderId }),
-      });
-
-      const json = await res.json();
-
-      if (!res.ok || !json.success) {
-        setStatus('error');
-        setErrorMsg(json.error?.message || 'Failed to initiate payment');
-        return;
-      }
-
-      const { tx_ref, checkout_url } = json.data;
-      setTxRef(tx_ref);
-      setCheckoutUrl(checkout_url);
+    // Simulate backend initialization delay
+    setTimeout(() => {
       setStatus('pending');
+      setCheckoutUrl('https://simulated.chapa.co/checkout/test');
 
-      // In Telegram Mini App: open Chapa checkout in Telegram browser
-      if (isTelegramMiniApp()) {
-        getTelegramWebApp().openLink(checkout_url);
-      }
-
-      // Start SSE stream to track payment status in real-time
-      startSSEStream(tx_ref);
-    } catch {
-      setStatus('error');
-      setErrorMsg('Network error. Please try again.');
-    }
-  }, [orderId, getToken, startSSEStream]);
+      // Simulate waiting for user payment completion
+      setTimeout(() => {
+        setStatus('success');
+        
+        // In a real app we'd trigger the table checkout here,
+        // but for simulation, the success UI is enough.
+      }, 4000);
+      
+    }, 1500);
+  }, []);
 
   // ── Reset ─────────────────────────────────────────────────
   const handleRetry = useCallback(() => {
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
-      eventSourceRef.current = null;
-    }
     setStatus('idle');
     setCheckoutUrl(null);
-    setTxRef(null);
     setErrorMsg(null);
   }, []);
 

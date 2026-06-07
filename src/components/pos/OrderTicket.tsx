@@ -16,7 +16,7 @@ interface OrderTicketProps {
   onRemoveItem: (cartId: string) => void;
   onUpdateQuantity: (cartId: string, delta: number) => void;
   onClear: () => void;
-  onSubmitOrder: () => Promise<number | null>; // Returns created order_id
+  onSubmitOrder: (tableId: string) => Promise<number | null>; // Returns created order_id
 }
 
 export function OrderTicket({ items, onUpdateQuantity, onClear, onSubmitOrder }: OrderTicketProps) {
@@ -30,7 +30,7 @@ export function OrderTicket({ items, onUpdateQuantity, onClear, onSubmitOrder }:
 
   async function handleSubmit() {
     setIsSubmitting(true);
-    const orderId = await onSubmitOrder();
+    const orderId = await onSubmitOrder(tableNumber);
     if (orderId) {
       setCreatedOrderId(orderId);
     }

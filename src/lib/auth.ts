@@ -1,21 +1,17 @@
-import { isTelegramMiniApp, getTelegramWebApp } from './telegram';
+import { isTelegramMiniApp } from './telegram';
 
 export async function getAuthToken(): Promise<string | null> {
   if (isTelegramMiniApp()) {
     const cached = sessionStorage.getItem('jwt');
     if (cached) return cached;
 
-    const tg = getTelegramWebApp();
-    const res = await fetch('/api/v1/miniapp/auth', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ initData: tg.initData }),
-    });
-    const { success, data } = await res.json();
-    if (!success) return null;
-    sessionStorage.setItem('jwt', data.token);
-    sessionStorage.setItem('user', JSON.stringify(data.user));
-    return data.token;
+    // Simulated Auth for Frontend Only Mode
+    const fakeToken = "simulated-jwt-token-mini-app";
+    const fakeUser = { id: 1, name: "MiniApp User", role: "staff" };
+    
+    sessionStorage.setItem('jwt', fakeToken);
+    sessionStorage.setItem('user', JSON.stringify(fakeUser));
+    return fakeToken;
   }
 
   return localStorage.getItem('jwt');

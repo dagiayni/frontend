@@ -10,6 +10,8 @@ export function Navbar() {
   const [userRole, setUserRole] = useState<string>('owner');
   const [userName, setUserName] = useState<string>('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isFinanceOpen, setIsFinanceOpen] = useState(false);
+  const [isDisplayOpen, setIsDisplayOpen] = useState(false);
 
   useEffect(() => {
     const userJson = localStorage.getItem('user');
@@ -20,17 +22,62 @@ export function Navbar() {
     }
   }, []);
 
-  const allLinks = [
-    { name: 'POS', path: '/pos', roles: ['owner', 'manager', 'cashier', 'waiter'] },
-    { name: 'Kitchen', path: '/kitchen', roles: ['owner', 'manager', 'kitchen'] },
+  useEffect(() => {
+    if (pathname?.startsWith('/finance')) {
+      setIsFinanceOpen(true);
+    }
+    if (pathname?.startsWith('/display')) {
+      setIsDisplayOpen(true);
+    }
+  }, [pathname]);
+
+  const hasAccess = (roles: string[]) => roles.includes(userRole);
+
+  const mainLinks = [
+    { name: 'Dashboard', path: '/dashboard', roles: ['owner', 'manager'] },
+    { name: 'POS / Order', path: '/pos', roles: ['owner', 'manager', 'cashier', 'waiter'] },
+    { name: 'Table Management', path: '/table-management', roles: ['owner', 'manager', 'cashier', 'waiter'] },
+  ];
+
+  const financeSubLinks = [
+    { name: 'Revenue Management', path: '/finance/revenue', roles: ['owner', 'manager'] },
+    { name: 'Expenses Management', path: '/finance/expenses', roles: ['owner', 'manager'] },
+    { name: 'Bill Management', path: '/finance/bills', roles: ['owner', 'manager'] },
+  ];
+
+  const displaySubLinks = [
+    { name: 'Kitchen Display', path: '/display/kitchen', roles: ['owner', 'manager', 'kitchen'] },
+    { name: 'Bar Display', path: '/display/bar', roles: ['owner', 'manager', 'waiter', 'kitchen'] },
+  ];
+
+  const bottomLinks = [
+    { name: 'Butchery', path: '/butchery', roles: ['owner', 'manager', 'kitchen'] },
     { name: 'Inventory', path: '/inventory', roles: ['owner', 'manager'] },
     { name: 'Customers', path: '/customers', roles: ['owner', 'manager', 'cashier'] },
     { name: 'Employees', path: '/employees', roles: ['owner', 'manager'] },
-    { name: 'Analytics', path: '/analytics', roles: ['owner', 'manager'] },
     { name: 'Settings', path: '/settings', roles: ['owner'] },
   ];
 
-  const links = allLinks.filter(link => link.roles.includes(userRole));
+  const renderLink = (link: { name: string; path: string }, isSub = false) => {
+    const isActive = pathname === link.path || (!isSub && pathname?.startsWith(link.path) && link.path !== '/dashboard');
+    return (
+      <Link
+        key={link.name}
+        href={link.path}
+        onClick={() => setIsMobileMenuOpen(false)}
+        className={`block font-body text-sm font-semibold transition-colors ${
+          isSub 
+            ? 'pl-10 pr-6 py-2.5 text-white/60 hover:text-white hover:bg-brand/30' 
+            : 'px-6 py-3.5 text-white/70 hover:bg-brand hover:text-white'
+        } ${isActive ? (isSub ? 'text-white bg-brand/40 font-bold border-l-2 border-brand-light' : 'bg-brand text-white border-l-4 border-brand-light') : ''}`}
+      >
+        {link.name}
+      </Link>
+    );
+  };
+
+  const showFinanceDropdown = hasAccess(['owner', 'manager']);
+  const showDisplayDropdown = hasAccess(['owner', 'manager', 'kitchen', 'waiter']);
 
   return (
     <>
@@ -58,15 +105,14 @@ export function Navbar() {
       {/* Mobile Menu Drawer Overlay */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden animate-fadeIn">
-          {/* Backdrop with subtle blur */}
+          {/* Backdrop */}
           <div 
             className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity" 
             onClick={() => setIsMobileMenuOpen(false)}
           />
 
-          {/* Drawer Content container */}
+          {/* Drawer Content */}
           <div className="relative flex flex-col w-full max-w-[280px] bg-brand-dark text-white h-full shadow-2xl z-10 animate-slideInLeft">
-            {/* Close Button & Brand Title */}
             <div className="p-6 border-b border-brand-hover/30 flex justify-between items-center">
               <div>
                 <h1 className="font-display text-2xl font-bold tracking-wide leading-none">MANDELA</h1>
@@ -83,25 +129,63 @@ export function Navbar() {
               </button>
             </div>
 
-            {/* Scrollable Navigation Links */}
+            {/* Scrollable Navigation */}
             <nav className="flex-1 py-4 overflow-y-auto">
-              {links.map((link) => (
-                <Link 
-                  key={link.name} 
-                  href={link.path}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`block px-6 py-3.5 font-body text-sm font-semibold transition-colors ${
-                    pathname.startsWith(link.path) 
-                      ? 'bg-brand text-white border-l-4 border-brand-light' 
-                      : 'text-white/70 hover:bg-brand hover:text-white'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              ))}
+              {mainLinks.filter(l => hasAccess(l.roles)).map(link => renderLink(link))}
+              
+              {/* Finance Dropdown Mobile */}
+              {showFinanceDropdown && (
+                <div>
+                  <button
+                    onClick={() => setIsFinanceOpen(!isFinanceOpen)}
+                    className="w-full flex items-center justify-between px-6 py-3.5 font-body text-sm font-semibold text-white/70 hover:bg-brand hover:text-white transition-colors text-left"
+                  >
+                    <span>Finance Management</span>
+                    <svg 
+                      className={`w-4 h-4 transition-transform duration-200 ${isFinanceOpen ? 'rotate-180' : ''}`} 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {isFinanceOpen && (
+                    <div className="bg-brand-dark/50 border-y border-brand-hover/10 py-1">
+                      {financeSubLinks.filter(l => hasAccess(l.roles)).map(link => renderLink(link, true))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Display System Dropdown Mobile */}
+              {showDisplayDropdown && (
+                <div>
+                  <button
+                    onClick={() => setIsDisplayOpen(!isDisplayOpen)}
+                    className="w-full flex items-center justify-between px-6 py-3.5 font-body text-sm font-semibold text-white/70 hover:bg-brand hover:text-white transition-colors text-left"
+                  >
+                    <span>Display System</span>
+                    <svg 
+                      className={`w-4 h-4 transition-transform duration-200 ${isDisplayOpen ? 'rotate-180' : ''}`} 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {isDisplayOpen && (
+                    <div className="bg-brand-dark/50 border-y border-brand-hover/10 py-1">
+                      {displaySubLinks.filter(l => hasAccess(l.roles)).map(link => renderLink(link, true))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {bottomLinks.filter(l => hasAccess(l.roles)).map(link => renderLink(link))}
             </nav>
 
-            {/* Mobile Sidebar Footer */}
             <div className="p-4 border-t border-brand-hover/30">
               {userName && (
                 <div className="mb-4 px-4 py-2 bg-brand/20 rounded capitalize text-xs text-brand-light/90">
@@ -126,25 +210,65 @@ export function Navbar() {
       )}
 
       {/* Desktop Persistent Sidebar */}
-      <aside className="w-64 bg-brand-dark text-white min-h-screen hidden md:flex flex-col shrink-0">
+      <aside className="w-64 bg-brand-dark text-white min-h-screen hidden md:flex flex-col shrink-0 border-r border-brand-hover/20">
         <div className="p-6 border-b border-brand-hover/30">
           <h1 className="font-display text-2xl font-bold tracking-wide">MANDELA<br/>HOUSE</h1>
           {userName && <div className="mt-4 inline-block px-2 py-1 bg-brand text-xs font-bold rounded capitalize">{userName} ({userRole})</div>}
         </div>
-        <nav className="flex-1 py-4">
-          {links.map((link) => (
-            <Link 
-              key={link.name} 
-              href={link.path}
-              className={`block px-6 py-3 font-body text-sm font-semibold transition-colors ${
-                pathname.startsWith(link.path) 
-                  ? 'bg-brand text-white border-l-4 border-brand-light' 
-                  : 'text-white/70 hover:bg-brand hover:text-white'
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
+        <nav className="flex-1 py-4 overflow-y-auto">
+          {mainLinks.filter(l => hasAccess(l.roles)).map(link => renderLink(link))}
+
+          {/* Finance Dropdown Desktop */}
+          {showFinanceDropdown && (
+            <div>
+              <button
+                onClick={() => setIsFinanceOpen(!isFinanceOpen)}
+                className="w-full flex items-center justify-between px-6 py-3 font-body text-sm font-semibold text-white/70 hover:bg-brand hover:text-white transition-colors text-left"
+              >
+                <span>Finance Management</span>
+                <svg 
+                  className={`w-4 h-4 transition-transform duration-200 ${isFinanceOpen ? 'rotate-180' : ''}`} 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {isFinanceOpen && (
+                <div className="bg-brand-dark/40 py-1 transition-all">
+                  {financeSubLinks.filter(l => hasAccess(l.roles)).map(link => renderLink(link, true))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Display System Dropdown Desktop */}
+          {showDisplayDropdown && (
+            <div>
+              <button
+                onClick={() => setIsDisplayOpen(!isDisplayOpen)}
+                className="w-full flex items-center justify-between px-6 py-3 font-body text-sm font-semibold text-white/70 hover:bg-brand hover:text-white transition-colors text-left"
+              >
+                <span>Display System</span>
+                <svg 
+                  className={`w-4 h-4 transition-transform duration-200 ${isDisplayOpen ? 'rotate-180' : ''}`} 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {isDisplayOpen && (
+                <div className="bg-brand-dark/40 py-1 transition-all">
+                  {displaySubLinks.filter(l => hasAccess(l.roles)).map(link => renderLink(link, true))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {bottomLinks.filter(l => hasAccess(l.roles)).map(link => renderLink(link))}
         </nav>
         <div className="p-4 border-t border-brand-hover/30">
           <button className="w-full text-left px-2 py-2 text-sm text-white/70 hover:text-white transition-colors" onClick={() => {

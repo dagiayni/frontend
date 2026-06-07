@@ -3,33 +3,29 @@
 import { useEffect, useState } from 'react';
 import { MenuGrid, MenuItem } from '@/components/pos/MenuGrid';
 import { OrderTicket, OrderItem } from '@/components/pos/OrderTicket';
-import { getAuthToken } from '@/lib/auth';
+import { MOCK_MENU, submitPOSOrder, OrderItem as StorageOrderItem } from '@/lib/mockStorage';
 
 export default function PosPage() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'menu' | 'cart'>('menu');
 
   useEffect(() => {
-    async function loadMenu() {
-      try {
-        const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
-        const res = await fetch(`${apiBase}/api/v1/menu/items`);
-        const json = await res.json();
-        if (json.success) {
-          setMenuItems(json.data);
-        } else {
-          setError('Failed to load menu');
-        }
-      } catch {
-        setError('Error connecting to server');
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadMenu();
+    // Simulate slight loading for feel, then load from mock storage
+    const timer = setTimeout(() => {
+      // Cast the mock menu items to POS MenuItem structure
+      const formattedItems = MOCK_MENU.map(item => ({
+        id: item.id,
+        name: item.name,
+        category: item.category,
+        price: item.price,
+        is_available: item.is_available
+      }));
+      setMenuItems(formattedItems);
+      setIsLoading(false);
+    }, 300);
+    return () => clearTimeout(timer);
   }, []);
 
   function handleAddItem(item: MenuItem) {
@@ -56,43 +52,36 @@ export default function PosPage() {
     }).filter(i => i.quantity > 0));
   }
 
-  async function handleSubmitOrder(): Promise<number | null> {
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
-    const token = await getAuthToken();
-    
+  async function handleSubmitOrder(tableId: string): Promise<number | null> {
     try {
-      const payload = {
-        table_number: "1", // TODO: read from state
-        items: orderItems.map(i => ({
-          menu_item_id: i.id,
-          quantity: i.quantity,
-          notes: i.notes || ""
-        }))
-      };
+      // Format cart items for table billing
+      const formattedOrderItems: StorageOrderItem[] = orderItems.map(item => ({
+        id: item.id,
+        name: item.name,
+        category: item.category,
+        price: item.price,
+        quantity: item.quantity,
+        notes: item.notes || ""
+      }));
 
-      const res = await fetch(`${apiBase}/api/v1/orders`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
+      // Submit to simulated database
+      const success = submitPOSOrder(tableId, formattedOrderItems);
       
-      const json = await res.json();
-      if (json.success) {
-        return json.data.id;
+      if (success) {
+        // Return a simulated order ID
+        return Math.floor(100 + Math.random() * 900);
       }
-      alert('Failed to submit order: ' + (json.error?.message || 'Unknown error'));
+      
+      alert('Failed to submit order to Table ' + tableId);
       return null;
-    } catch {
-      alert('Network error submitting order');
+    } catch (err) {
+      console.error(err);
+      alert('Error submitting order');
       return null;
     }
   }
 
   if (isLoading) return <div className="p-8 text-brand font-semibold animate-pulse">Loading POS...</div>;
-  if (error) return <div className="p-8 text-red-600 font-semibold">{error}</div>;
 
   return (
     <div className="h-[calc(100vh-theme(spacing.16))] md:h-screen flex flex-col overflow-hidden page-enter">
