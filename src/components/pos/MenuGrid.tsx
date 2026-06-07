@@ -7,6 +7,7 @@ export interface MenuItem {
   id: number;
   name: string;
   category: string;
+  type: 'food' | 'drink';
   price: string;
   is_available: boolean;
 }

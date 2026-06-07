@@ -181,6 +181,7 @@ export function initializeMockStorage() {
         id: menuItem.id,
         name: menuItem.name,
         category: menuItem.category,
+        type: menuItem.type as 'food' | 'drink',
         price: menuItem.price,
         quantity
       });

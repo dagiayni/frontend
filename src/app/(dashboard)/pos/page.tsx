@@ -19,6 +19,7 @@ export default function PosPage() {
         id: item.id,
         name: item.name,
         category: item.category,
+        type: item.type as "food" | "drink",
         price: item.price,
         is_available: item.is_available
       }));
@@ -59,6 +60,7 @@ export default function PosPage() {
         id: item.id,
         name: item.name,
         category: item.category,
+        type: item.type,
         price: item.price,
         quantity: item.quantity,
         notes: item.notes || ""
